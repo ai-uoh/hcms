@@ -1,0 +1,26 @@
+[
+    {
+        "med_id": "MED12345",
+        "batch_id": "BATCH1",
+        "mfgDate": "09/2018",
+        "expiryDate": "10/2020",
+        "instock": "true",
+        "qty": "10"
+    },
+    {
+        "med_id": "MED82789",
+        "batch_id": "BATCH2",
+        "mfgDate": "10/2018",
+        "expiryDate": "11/2020",
+        "instock": "false",
+        "qty": "20"
+    },
+    {
+        "med_id": "MED12345",
+        "batch_id": "BATCH1",
+        "mfgDate": "10/2018",
+        "expiryDate": "12/2020",
+        "instock": "true",
+        "qty": "10"
+    }
+]

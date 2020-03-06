@@ -1,0 +1,41 @@
+[
+    {
+        "id": "MED12345",
+        "name": "Crocin 650",
+        "mfgBy": "GSK",
+        "description": "Crocin Tablets is known as a mild analgesic that is used to treat mild fever and is a common pain reliever. It is often given to patients who suffer from cancer or have undergone surgery, to help them cope up with the pain.",
+        "ingredients": [
+            {
+                "name": "Paracetamol",
+                "conc": "650mg"
+            }
+        ],
+        "cost": "30.00",
+        "uses": [
+            "Fever",
+            "Muscle Pain"
+        ],
+        "safety_instructions": "Store in a cool dry place away from direct sunlight. Seek medical advice if the patient is suffering from liver or kidney problems. Keep out of reach of the children"
+    },
+    {
+        "id": "MED82789",
+        "name": "Alerid 10 MG",
+        "mfgBy": "Cipla",
+        "description": "Alerid 10 MG Tablet is a very effective and potent medication to treat allergic symptoms associated with Rhinitis and Utricaria. Allergies such as runny nose, watery eyes, sneezing, skin itching and hives can be effectively treated with this medicine.",
+        "ingredients": [
+            {
+                "name": "Cetirizine",
+                "conc": "10mg"
+            }
+        ],
+        "cost": "18.00",
+        "uses": [
+            "Allergies"
+        ],
+        "side_effects": [
+            "Headache",
+            "Sleepiness"
+        ],
+        "safety_instructions": "Store in a cool dry place away from direct sunlight. Seek medical advice if the patient is suffering from liver or kidney problems. Keep out of reach of the children"
+    }
+]
