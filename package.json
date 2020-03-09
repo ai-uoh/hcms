@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@hapi/joi": "^17.1.0",
+    "body-parser": "^1.19.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
@@ -15,12 +16,28 @@
     "http-errors": "~1.6.3",
     "joi": "^14.3.1",
     "joi-json": "^4.0.0",
-    "morgan": "~1.9.1"
+    "mongoose": "^5.9.3",
+    "morgan": "~1.9.1",
+    "promise": "^8.1.0",
+    "validator": "^12.2.0"
   },
   "devDependencies": {
     "dotenv": "^8.2.0",
     "mongodb": "3.5.4",
     "nodemailer": "^4.6.8",
     "nodemon": "^1.18.4"
-  }
+  },
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cheriachan/UoH.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cheriachan/UoH/issues"
+  },
+  "homepage": "https://github.com/Cheriachan/UoH#readme",
+  "description": ""
 }
