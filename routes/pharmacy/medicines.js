@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var mongo_connect = require('./../../utilities/mongo_connector');
 var MedicinesModel = require('../../models/pharmacy/medicines')
 
 /* GET medicines listing. */
@@ -13,7 +12,7 @@ router.get('/medicines/', function (req, res, next) {
         })
 })
 
-/* GET medicine from name. */
+/* GET medicine from id. */
 router.get('/medicines/:id', function (req, res, next) {
     MedicinesModel.find({
         id: req.params.id
@@ -23,9 +22,9 @@ router.get('/medicines/:id', function (req, res, next) {
         .catch(err => {
             console.error(err)
         })
-});
+})
 
-/* GET medicines listing. */
+/* POST medicines listing. */
 router.post('/medicines/', function (req, res, next) {
 
     var medicines = []
@@ -46,8 +45,8 @@ router.post('/medicines/', function (req, res, next) {
         })
         medicines.push(medicine)
     }
-    res.send(medicines);
-});
+    res.send(medicines)
+})
 
 /* UPDATE a medicine. */
 router.put('/medicines/:id', (req, res) => {
@@ -68,10 +67,10 @@ router.put('/medicines/:id', (req, res) => {
         new: true,
         runValidators: true
     }, function (err) {
-        if (err) res.status(400).send(err.errors.id.name + ", " + err.errors.id);
+        if (err) res.status(400).send(err.errors.id.name + ", " + err.errors.id)
     })
         .then(doc => {
-            if (!doc) return res.status('404').send(`Medicine with id ${req.params.id} is not present in the collection`);
+            if (!doc) return res.status('404').send(`Medicine with id ${req.params.id} is not present in the collection`)
             res.send(doc)
         }).catch(err => {
             console.error(err)
@@ -79,7 +78,7 @@ router.put('/medicines/:id', (req, res) => {
         })
 });
 
-// DELETE a medicine
+/* DELETE a medicine */
 router.delete('/medicines/:id', (req, res) => {
 
     MedicinesModel
@@ -87,7 +86,7 @@ router.delete('/medicines/:id', (req, res) => {
             id: req.params.id
         })
         .then(doc => {
-            if (!doc) return res.status('404').send(`Medicine with id ${req.params.id} is not present in the collection`);
+            if (!doc) return res.status('404').send(`Medicine with id ${req.params.id} is not present in the collection`)
             res.send(doc)
         })
         .catch(err => {
@@ -95,4 +94,4 @@ router.delete('/medicines/:id', (req, res) => {
         })
 });
 
-module.exports = router;
+module.exports = router

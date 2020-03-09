@@ -28,5 +28,4 @@ let medSchema = new mongoose.Schema({
     safety_instructions: String
 })
 
-
 module.exports = mongoose.model('Medicine', medSchema, 'medicines')
