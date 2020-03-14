@@ -6,10 +6,9 @@ var BatchesModel = require('../../models/pharmacy/batches')
 router.get('/batches/', function (req, res, next) {
     BatchesModel.find().then(medicines => {
         res.send(medicines)
+    }).catch(err => {
+        res.status(err.status).send(errorResponse(err.status, err.message))
     })
-        .catch(err => {
-            console.error(err)
-        })
 })
 
 /* GET batch from id. */
@@ -18,65 +17,69 @@ router.get('/batches/:id', function (req, res, next) {
         id: req.params.id
     }).then(batch => {
         res.send(batch)
+    }).catch(err => {
+        res.status(err.status).send(errorResponse(err.status, err.message))
     })
-        .catch(err => {
-            console.error(err)
-        })
 });
 
 /* POST batches listing. */
 router.post('/batches/', function (req, res, next) {
-
-    var batches = []
-    for (var key in req.body) {
-        let batch = new BatchesModel({
-            id: "BATCH".concat(Math.floor((Math.random() * 10000) + 9999).toString(10)),
-            qty: req.body[key].qty
+    let batch = new BatchesModel(validateBatch(req))
+    batch.save()
+        .then(bat => {
+            res.send(bat)
         })
-        batch.save().catch(err => {
-            console.error(err)
+        .catch(err => {
+            res.status(400).send(errorResponse(400, err.message))
         })
-        batches.push(batch)
-    }
-    res.send(batches)
 });
 
 /* UPDATE a batch. */
 router.put('/batches/:id', (req, res) => {
-
     BatchesModel.findOneAndUpdate({
         id: req.params.id
-    }, {
-        id: req.params.id,
-        qty: req.body.qty
-    }, {
+    }, validateBatch(req), {
         new: true,
-        runValidators: true
-    }, function (err) {
-        if (err) res.status(400).send(err.errors.id.name + ", " + err.errors.id);
+        runValidators: true,
+        useFindAndModify: false
+    }).then(batch => {
+        if (!batch) return res.status(404).send(errorResponse(404, `Batch with id ${req.params.id} is not present in the collection`))
+        res.send(batch)
+    }).catch(err => {
+        res.status(400).send(errorResponse(400, err.message))
     })
-        .then(doc => {
-            if (!doc) return res.status('404').send(`Batch with id ${req.params.id} is not present in the collection`)
-            res.send(doc)
-        }).catch(err => {
-            console.error(err)
-        })
 })
 
 /* DELETE a batch */
 router.delete('/batches/:id', (req, res) => {
-
     BatchesModel
-        .findOneAndRemove({
+        .findOneAndDelete({
             id: req.params.id
         })
-        .then(doc => {
-            if (!doc) return res.status('404').send(`Batch with id ${req.params.id} is not present in the collection`);
-            res.send(doc)
+        .then(batch => {
+            if (!batch) return res.status(404).send(errorResponse(404, `Medicine with id ${req.params.id} is not present in the collection`))
+            res.send(batch)
         })
         .catch(err => {
-            console.error(err)
+            res.status(400).send(errorResponse(400, err.message))
         })
-});
+})
+
+function validateBatch(req) {
+    let batch = {
+        id: req.params.id || "BATCH".concat(Math.floor((Math.random() * 10000) + 9999).toString(10)),
+        qty: req.body.qty
+    }
+    return batch;
+}
+
+function errorResponse(status, message) {
+    return {
+        error: {
+            status: status,
+            message: message
+        }
+    }
+}
 
 module.exports = router

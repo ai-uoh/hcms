@@ -6,10 +6,9 @@ var MedicinesModel = require('../../models/pharmacy/medicines')
 router.get('/medicines/', function (req, res, next) {
     MedicinesModel.find().then(medicines => {
         res.send(medicines)
+    }).catch(err => {
+        res.status(err.status).send(errorResponse(err.status, err.message))
     })
-        .catch(err => {
-            console.error(err)
-        })
 })
 
 /* GET medicine from id. */
@@ -18,43 +17,58 @@ router.get('/medicines/:id', function (req, res, next) {
         id: req.params.id
     }).then(medicine => {
         res.send(medicine)
+    }).catch(err => {
+        res.status(err.status).send(errorResponse(err.status, err.message))
     })
-        .catch(err => {
-            console.error(err)
-        })
 })
 
 /* POST medicines listing. */
 router.post('/medicines/', function (req, res, next) {
 
-    var medicines = []
-    for (var key in req.body) {
-        let medicine = new MedicinesModel({
-            id: "MED".concat(Math.floor((Math.random() * 10000) + 9999).toString(10)),
-            name: req.body[key].name,
-            mfgBy: req.body[key].mfgBy,
-            description: req.body[key].description,
-            ingredients: req.body[key].ingredients,
-            cost: req.body[key].cost,
-            uses: req.body[key].uses,
-            side_effects: req.body[key].side_effects,
-            safety_instructions: req.body[key].safety_instructions
+    let medicine = new MedicinesModel(validateMedicine(req))
+    medicine.save()
+        .then(med => {
+            res.send(med)
         })
-        medicine.save().catch(err => {
-            console.error(err)
+        .catch(err => {
+            res.status(400).send(errorResponse(400, err.message))
         })
-        medicines.push(medicine)
-    }
-    res.send(medicines)
 })
 
 /* UPDATE a medicine. */
 router.put('/medicines/:id', (req, res) => {
-
     MedicinesModel.findOneAndUpdate({
         id: req.params.id
-    }, {
-        id: req.params.id,
+    }, validateMedicine(req), {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false
+    }).then(medicine => {
+        if (!medicine) return res.status(404).send(errorResponse(404, `Medicine with id ${req.params.id} is not present in the collection`))
+        res.send(medicine)
+    }).catch(err => {
+        res.status(400).send(errorResponse(400, err.message))
+    })
+});
+
+/* DELETE a medicine */
+router.delete('/medicines/:id', (req, res) => {
+    MedicinesModel
+        .findOneAndDelete({
+            id: req.params.id
+        })
+        .then(medicine => {
+            if (!medicine) return res.status(404).send(errorResponse(404, `Medicine with id ${req.params.id} is not present in the collection`))
+            res.send(medicine)
+        })
+        .catch(err => {
+            res.status(400).send(errorResponse(400, err.message))
+        })
+});
+
+function validateMedicine(req) {
+    let medicine = {
+        id: req.params.id || "MED".concat(Math.floor((Math.random() * 10000) + 9999).toString(10)),
         name: req.body.name,
         mfgBy: req.body.mfgBy,
         description: req.body.description,
@@ -63,35 +77,17 @@ router.put('/medicines/:id', (req, res) => {
         uses: req.body.uses,
         side_effects: req.body.side_effects,
         safety_instructions: req.body.safety_instructions
-    }, {
-        new: true,
-        runValidators: true
-    }, function (err) {
-        if (err) res.status(400).send(err.errors.id.name + ", " + err.errors.id)
-    })
-        .then(doc => {
-            if (!doc) return res.status('404').send(`Medicine with id ${req.params.id} is not present in the collection`)
-            res.send(doc)
-        }).catch(err => {
-            console.error(err)
+    }
+    return medicine;
+}
 
-        })
-});
-
-/* DELETE a medicine */
-router.delete('/medicines/:id', (req, res) => {
-
-    MedicinesModel
-        .findOneAndRemove({
-            id: req.params.id
-        })
-        .then(doc => {
-            if (!doc) return res.status('404').send(`Medicine with id ${req.params.id} is not present in the collection`)
-            res.send(doc)
-        })
-        .catch(err => {
-            console.error(err)
-        })
-});
+function errorResponse(status, message) {
+    return {
+        error: {
+            status: status,
+            message: message
+        }
+    }
+}
 
 module.exports = router
